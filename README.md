@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+## MVP
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- Users can add bird pictures to database
+- Users can create an account
+- Users can login to website
+- Users can view bird pictures from our database
+- Users can edit/delete their own posts
 
-## Available Scripts
+## Icebox
 
-In the project directory, you can run:
+- Users can comment on other users' posts
+- Users can update/like posts
+- Users can view locations of bird sightings using Google Maps API
 
-### `npm start`
+## Database
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Schemas
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+users
 
-### `npm test`
+```SQL
+CREATE TABLE bird_users (
+    user_id SERIAL PRIMARY KEY,
+    email VARCHAR(60) NOT NULL,
+    username varchar(20) not NULL,
+    password TEXT
+);
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+posts
 
-### `npm run build`
+```SQL
+CREATE TABLE posts (
+    post_id SERIAL PRIMARY KEY,
+    img TEXT,
+    species_name VARCHAR(32),
+    location TEXT,
+    user_id INT REFERENCES bird_users(user_id)
+)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+comments
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```SQL
+CREATE TABLE comments (
+comment_id SERIAL PRIMARY KEY,
+body TEXT,
+user_id INT REFERENCES bird_users(user_id),
+post_id INT REFERENCES posts(post_id)
+);
 
-### `npm run eject`
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Server
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Dependencies:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  - express
+  - massive
+  - dotenv
+  - express-session
+  - bcrypt
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- File Structure
+- server/
+- index.js
+- controllers/
+- authController.js
+- postController.js
 
-## Learn More
+- Endpoints:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  - auth endpoints:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    - register => '/auth/register'
+    - login => '/auth/login'
+    - logout => '/auth/logout'
+    - getUserSession => '/api/get_user
 
-### Code Splitting
+  - post endpoints:
+    - read posts => 'api/posts'
+    - delete => '/api/post/:id'
+    - edit => '/api/post/:id'
+    - create => '/api/post'
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Frontend
 
-### Analyzing the Bundle Size
+- Dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+  - axios
+  - react-router-dom
+  - redux
+  - react-redux
+  - redux-promise-middleware
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- File Structure
+  - src/
+    - App.js
+    - App.css
+    - reset.css
+    - redux/
+      - store.js
+      - reducer.js
+    - routes.js
+      - '/' => Auth.js
+      - '/createpost' => Form.js
+      - '/Feed' => Feed.js
+    - components/
+      - Header.js
+      - Auth.js
+      - Form.js
+      - Feed.js
